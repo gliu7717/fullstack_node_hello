@@ -5,8 +5,11 @@ import {promises as fs} from 'fs'
 import {people} from './people'
 
 
+
 //const { MongoClient, ServerApiVersion } = require('mongodb');
-import { MongoClient, ServerApiVersion } from 'mongodb';
+//var ObjectID = require('mongodb').ObjectId
+
+import { MongoClient, ServerApiVersion, ObjectId } from 'mongodb';
 
 const uri = "mongodb+srv://liugeyang:gerry@myclusterprovider.mhfbhk0.mongodb.net/?retryWrites=true&w=majority&appName=myClusterProvider";
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -55,6 +58,19 @@ app.get('/api/users', async (req,res)=>{
     try {
         await client.connect();
         const users = await client.db("users").collection('users').find({}).toArray();
+        res.send(users)    
+    } 
+    finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+})
+
+app.get('/api/users/:id', async (req,res)=>{
+    try {
+        await client.connect();
+        
+        const users = await client.db("users").collection('users').find({_id: new ObjectId(req.params.id)}).toArray();
         res.send(users)    
     } 
     finally {
