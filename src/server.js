@@ -93,6 +93,20 @@ app.post('/api/users', async (req,res)=>{
     }
 })
 
+app.put('/api/users/:id', async (req,res)=>{
+    try {
+        let newPerson = req.body;
+        await client.connect();
+        await client.db("users").collection('users').replaceOne({_id: new ObjectId(req.params.id)},
+             newPerson )
+        res.send(newPerson)    
+    } 
+    finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+})
+
 
 app.listen(3000, ()=>{
     console.log("Server is listening on port 3000")
