@@ -107,6 +107,20 @@ app.put('/api/users/:id', async (req,res)=>{
     }
 })
 
+app.delete('/api/users/:id', async (req,res)=>{
+    try {
+        await client.connect();
+        await client.db("users").collection('users').deleteOne({_id: new ObjectId(req.params.id)} )
+        res.send("deleted:" + req.params.id)    
+    
+    } 
+    finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+})
+
+
 
 app.listen(3000, ()=>{
     console.log("Server is listening on port 3000")
